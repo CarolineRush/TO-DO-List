@@ -14,9 +14,18 @@
     document.addEventListener('DOMContentLoaded', e =>{
         refreshUI();
         lists.forEach( list =>{
-            selectList.innerHTML += 
+            selectList.innerHTML += `<option value=${list.id}>${list.text}</option>`
         })
     });
+
+    function Todo(id, text, list, completed){
+        return {id: id, text: text, list: list, completed: completed}
+    }
+
+    form.addEventListener('submit', e =>{
+        e.preventDefault();
+        const text = input.value.trim();
+    })
 
     function refreshUI(){
 
