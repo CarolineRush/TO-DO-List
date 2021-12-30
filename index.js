@@ -25,11 +25,78 @@
     form.addEventListener('submit', e =>{
         e.preventDefault();
         const text = input.value.trim();
-    })
+        const listId = selectList.value;
+
+        if (text === '') return false;
+
+        const newTodo = new Todo(uuidv4(), text, listId, false);
+
+        todos.push(newTodo);
+        input.value = '';
+
+        refreshUI();
+    });
 
     function refreshUI(){
-
+        renderTodos();
+        renderLists();
     }
+
+    function renderTodos(){
+        const todosContainer = document.querySelector('#todos');
+        todosContainer.innerHTML = '';
+
+        todos.forEach(todo => {
+            todosContainer.innerHTML += renderTodo(todo);
+        });
+
+        document.querySelectorAll('.todo label input').forEach(item => {
+            item.addEventListener('click', e => {
+                const id = e.target.parentNode.parentNode.getAttribute('data-id');
+                const index = todos.findIndex(todo => todo.id === id);
+
+                todos[index].completed = !todos[index].completed
+            })
+        })
+
+        document.querySelectorAll('.todo button').forEach(item => {
+            item.addEventListener('click', e => {
+                const id = e.target.parentNode.getAttribute('data-id');
+                const obj = getItemAndIndex(todos, {id: id});
+
+                todos.splice(obj.index, 1);
+
+                renderLists();
+                renderTodos();
+            })
+        });
+    }
+
+
+    function getItemAndIndex(arr, obj){
+        let i = 0;
+        const key = Object.keys(obj);
+        const value = obj[key];
+        for (i = 0; i < arr.length; i++){
+            if(arr[i][key] === value){
+                return { index: i, item:arr[i]};
+            }
+        }
+    }
+    
+    function renderTodo(todo){
+        return `
+            <div class="todo" data-id="${todo.id}">
+                <label class="checkbox-container">${todo.text}
+                    <input type="checkbox" ${(todo.completed)? 'checked="checked"': ''} />
+                    <span class="checkmark"></span>
+                </label>
+                <button></button>
+            </div>
+        `;
+    }
+
+    function renderLists(){}
     function uuidv4(){
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r& 0x3 | 0x8);
