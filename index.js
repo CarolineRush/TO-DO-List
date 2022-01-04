@@ -96,7 +96,33 @@
         `;
     }
 
-    function renderLists(){}
+    function renderLists(){
+        lists.forEach(list => {
+            list.count = 0;
+        });
+
+        todos.forEach(todo =>{
+            lists.forEach(list =>{
+                if(todo.list === list.id){
+                    list.count++;
+                }
+            })
+        });
+
+        listsContainer.innerHTML = '';
+        lists.forEach(list =>{
+            listsContainer.innerHTML += renderListItem(list);
+        });
+    }
+
+    function renderListItem(list){
+        return `
+            <div class="list">
+                <h3>${list.text}</h3> 
+                <p>${list.count} tareas</p>           
+            </div>
+        `;
+    }
     function uuidv4(){
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r& 0x3 | 0x8);
